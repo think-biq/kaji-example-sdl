@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
 
 		if (ENOENT == errno) {
 			printf("Creating new temp file ...\n");
-			kaji_file_create(tmppath, bind_size);			
+			kaji_file_create(tmppath, bind_size);
 		}
 		else if (ENOMEM == errno) {
 			printf("Temp file not large enought, extending ...\n");
@@ -138,6 +138,11 @@ int main(int argc, char *argv[])
 		SDL_RenderPresent(app.renderer);
 
 		SDL_Delay(app.sleep_time_ms);
+	}
+
+	if (0 != kaji_release(kaji)) {
+		fprintf(stderr, "Error releasing :/ (errno: %i, %s)\n"
+			, errno, strerror(errno));
 	}
 
 	kaji_dematerialize(kaji);

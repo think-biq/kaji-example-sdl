@@ -18,7 +18,7 @@ handle_signal(int signal_type) {
 	exit(signal_type);
 }
 
-int main () {	
+int main () {
 	printf("Setting up signal handler ...\n");
 	signal(SIGINT, handle_signal);
 	signal(SIGTERM, handle_signal);
@@ -55,6 +55,13 @@ int main () {
 		scanf(" %hhu", &(window_clear_color->r));
 		print_data(window_clear_color);
 	}
+
+	if (0 != kaji_release(kaji)) {
+		fprintf(stderr, "Error releasing :/ (errno: %i, %s)\n"
+			, errno, strerror(errno));
+	}
+
+	kaji_dematerialize(kaji);
 
 	return 0;
 }
