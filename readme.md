@@ -1,6 +1,6 @@
 # kaji sdl example
 
-Example project showcasing an IPC scenario where a SDL2 application can be controlled through a cli application. 
+Example project showcasing how to use [kaji](https://github.com/think-biq/kaji) for an IPC scenario where a SDL2 application can be controlled through a cli application. 
 
 ## Getting started
 
