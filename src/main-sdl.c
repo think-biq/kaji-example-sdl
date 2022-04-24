@@ -1,8 +1,11 @@
 
+#include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
 #include <stdio.h>
 #include <errno.h>
 
+#define SDL_MAIN_HANDLED
 #include <SDL.h>
 
 #include <kaji/all.h>
@@ -22,9 +25,11 @@ struct SDL_App {
 	char title[64];
 };
 
-int main(int argc, char *argv[])
-{
-	struct SDL_App app;
+
+int main () {
+	printf("Starting up gui app ...\n");
+
+	struct SDL_App app = {0};
 	memset(&app, 0, sizeof(struct SDL_App));
 
 	app.render_flags = SDL_RENDERER_ACCELERATED;

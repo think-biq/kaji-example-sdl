@@ -44,6 +44,14 @@ set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 if (MSVC)
     # warning level 4 and all warnings as errors
     #add_compile_options(/W4 /WX)
+    # Add crt dll dynamically (in either release or debug variant)
+    if (CMAKE_BUILD_TYPE STREQUAL "Release")
+        add_compile_options(/MD)
+    else ()
+        add_compile_options(/MDd)
+    endif ()
+
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS=1)
 else()
     # lots of warnings and all warnings as errors
     add_compile_options(-Wunused-result)
@@ -83,26 +91,31 @@ if(NOT EXISTS "${PROJECT_SOURCE_DIR}/deps/kaji/CMakeLists.txt")
 endif()
 add_subdirectory(deps/kaji)
 
+
+# .
 include_directories(inc)
 
-#.
+# .
 add_library(kaji-sdl-common
     ${PROJECT_SOURCE_DIR}/src/common.c
 )
 set_property(TARGET kaji-sdl-common PROPERTY C_STANDARD 17)
 
-#.
-add_executable(kaji-sdl
+# .
+add_executable(kaji-sdl-gui
     ${PROJECT_SOURCE_DIR}/src/main-sdl.c
 )
-set_property(TARGET kaji-sdl PROPERTY C_STANDARD 17)
-add_dependencies(kaji-sdl kaji-sdl-common SDL2-static kaji)
-target_link_libraries(kaji-sdl kaji-sdl-common SDL2-static kaji)
+set_property(TARGET kaji-sdl-gui PROPERTY C_STANDARD 17)
+add_dependencies(kaji-sdl-gui kaji-sdl-common kaji SDL2-static)
+target_link_options(kaji-sdl-gui PUBLIC $<$<CXX_COMPILER_ID:MSVC>:/FORCE:MULTIPLE>)
+target_link_libraries(kaji-sdl-gui kaji-sdl-common kaji SDL2-static)
 
-#.
-add_executable(kaji-cli
+
+# .
+add_executable(kaji-sdl-cli
     ${PROJECT_SOURCE_DIR}/src/main-cli.c
 )
-set_property(TARGET kaji-cli PROPERTY C_STANDARD 17)
-add_dependencies(kaji-cli kaji-sdl-common SDL2-static kaji)
-target_link_libraries(kaji-cli kaji-sdl-common SDL2-static kaji)
+set_property(TARGET kaji-sdl-cli PROPERTY C_STANDARD 17)
+add_dependencies(kaji-sdl-cli kaji-sdl-common kaji)
+target_link_options(kaji-sdl-cli PUBLIC $<$<CXX_COMPILER_ID:MSVC>:/FORCE:MULTIPLE>)
+target_link_libraries(kaji-sdl-cli kaji-sdl-common kaji)
