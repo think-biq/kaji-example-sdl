@@ -12,7 +12,7 @@ build:
 run: run-sdl
 
 run-sdl:
-	staging/./kaji-sdl
+	staging/./kaji-sdl-gui
 
 run-cli:
-	staging/./kaji-cli	
+	staging/./kaji-sdl-cli
