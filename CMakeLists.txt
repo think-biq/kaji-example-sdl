@@ -36,6 +36,7 @@ string(
 
 # .
 option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
+option(SDL_SHARED "Build sdl2 as shared library" ON)
 
 # Make sure libraries will be places beside executable.
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
@@ -81,7 +82,9 @@ if(NOT EXISTS "${PROJECT_SOURCE_DIR}/deps/SDL/CMakeLists.txt")
         GIT_SUBMODULE was turned off or failed. \
         Please update submodules and try again.")
 endif()
-add_subdirectory(deps/SDL)
+# Tell find_package where to find SDL sources.
+set(SDL2_SEARCH_PATHS "${PROJECT_SOURCE_DIR}/deps/SDL")
+find_package(SDL2 REQUIRED)
 
 # 
 if(NOT EXISTS "${PROJECT_SOURCE_DIR}/deps/kaji/CMakeLists.txt")
@@ -96,7 +99,7 @@ add_subdirectory(deps/kaji)
 include_directories(inc)
 
 # .
-add_library(kaji-sdl-common
+add_library(kaji-sdl-common SHARED
     ${PROJECT_SOURCE_DIR}/src/common.c
 )
 set_property(TARGET kaji-sdl-common PROPERTY C_STANDARD 17)
@@ -106,9 +109,10 @@ add_executable(kaji-sdl-gui
     ${PROJECT_SOURCE_DIR}/src/main-sdl.c
 )
 set_property(TARGET kaji-sdl-gui PROPERTY C_STANDARD 17)
-add_dependencies(kaji-sdl-gui kaji-sdl-common kaji SDL2-static)
+add_dependencies(kaji-sdl-gui kaji-sdl-common kaji)
+target_include_directories(kaji-sdl-gui PRIVATE ${SDL2_INCLUDE_DIRS})
 target_link_options(kaji-sdl-gui PUBLIC $<$<CXX_COMPILER_ID:MSVC>:/FORCE:MULTIPLE>)
-target_link_libraries(kaji-sdl-gui kaji-sdl-common kaji SDL2-static)
+target_link_libraries(kaji-sdl-gui kaji-sdl-common kaji ${SDL2_LIBRARIES})
 
 
 # .
